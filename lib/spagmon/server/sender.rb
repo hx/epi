@@ -11,16 +11,24 @@ module Spagmon
       # @example Get Spagmon's status
       #   Sender.send command: {command: 'status', arguments: []}
       #
-      # @param what [Hash] A hash with a single key (a symbol) being the message type,
-      #   and value (a hash) being the message.
+      # @example Shut down the server
+      #   Sender.send :shutdown
+      #
+      # @param what [Hash|Symbol] Either a symbol being the message type, or a hash
+      #   with a single key (a symbol) being the message type, and value (a hash) being the message.
       def self.send(what)
 
         raise ArgumentError, 'Expected a hash with one key (a symbol) and value (a hash)' unless
-            Hash === what && what.count == 1 && Symbol === what.keys.first && Hash === what.values.first
+            Symbol === what ||
+            (Hash === what && what.count == 1 && Symbol === what.keys.first && Hash === what.values.first)
 
-        EventMachine.run do
-          EventMachine.connect HOST, PORT, Sender, what.values.first.merge(type: what.keys.first)
+        data = case what
+          when Symbol then {type: what}
+          when Hash then what.values.first.merge(type: what.keys.first)
+          else nil
         end
+
+        EventMachine.run { EventMachine.connect HOST, PORT, Sender, data }
 
       end
 

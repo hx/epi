@@ -6,17 +6,22 @@ module Spagmon
       class Server < Command
 
         def run
-          EventMachine.run do
-
-            # Stir once...
-            Spagmon.beat!
-
-            # ...and keep stiring!
-            EM.add_periodic_timer(5) { Spagmon.beat! }
-
-            # Listen for other instructions and send them to the pot
-            EM.start_server HOST, PORT, Spagmon::Server::Receiver
+          case args.first
+            when nil, 'start' then startup
+            when 'stop' then shutdown
+            else raise Exceptions::Fatal, 'Unknown server command, use [ start | stop | restart ]'
           end
+        end
+
+        private
+
+        def startup
+          Spagmon::Server.run
+        end
+
+        def shutdown
+          Spagmon::Server.send :shutdown
+          puts 'Server has shut down'
         end
 
       end
