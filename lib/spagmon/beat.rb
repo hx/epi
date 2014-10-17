@@ -1,5 +1,5 @@
 module Spagmon
-  def self.stir!
+  def self.beat!
 
   end
 end

@@ -10,17 +10,15 @@ module Spagmon
         if root?
           puts Command.run command, args
         else
-          Spagmon.perish 'Please run this command as root.' if command == 'simmer'
-          EventMachine.run do
-            EventMachine.connect HOST, PORT, Pray, command, args
-          end
+          Server::Sender.send command: {command: command, arguments: args}
         end
       end
 
       private
 
       def root?
-        @is_root ||= `whoami`.chomp == 'root'
+        @is_root = `whoami`.chomp == 'root' if @is_root.nil?
+        @is_root
       end
 
     end

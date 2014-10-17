@@ -12,7 +12,7 @@ module Spagmon
             klass = Commands.const_get const_name
             return klass.new(args).run if Class === klass && klass < self
           end
-          Spagmon.perish 'Unknown command ' << command
+          raise Exceptions::Fatal, 'Unknown command'
         end
 
         attr_reader :args

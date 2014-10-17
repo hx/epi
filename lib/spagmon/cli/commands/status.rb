@@ -1,7 +1,7 @@
 module Spagmon
   module Cli
     module Commands
-      class Sniff < Command
+      class Status < Command
 
         def run
           'here is the status!'

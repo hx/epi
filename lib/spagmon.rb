@@ -1,11 +1,11 @@
 require 'pathname'
 require 'logger'
 
+require 'spagmon/exceptions'
 require 'spagmon/version'
 require 'spagmon/cli'
-require 'spagmon/pot'
-require 'spagmon/stir'
-require 'spagmon/pray'
+require 'spagmon/beat'
+require 'spagmon/server'
 
 module Spagmon
   ROOT = Pathname File.expand_path('../..', __FILE__)
