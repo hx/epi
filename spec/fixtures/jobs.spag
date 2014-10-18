@@ -3,7 +3,7 @@ require 'active_support/core_ext/numeric/time'
 
 GEM_ROOT = File.expand_path('../../..', __FILE__)
 
-Spagmon.job resque: 'Resque Workers' do |j|
+job resque: 'Resque Workers' do |j|
   j.directory = ENV['RAILS_HOME']
   j.environment = {
       QUEUE: '*',

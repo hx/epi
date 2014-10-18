@@ -33,7 +33,7 @@ module Spagmon
       end
 
       def run
-        raise Exception::Fatal, 'Server already running' if running?
+        raise Exceptions::Fatal, 'Server already running' if running?
         Data.server_pid = Process.pid
         Spagmon.beat!
         EM.add_periodic_timer(5) { Spagmon.beat! }
@@ -42,6 +42,7 @@ module Spagmon
       end
 
       def send(*args)
+        ensure_running
         Sender.send *args
       end
 

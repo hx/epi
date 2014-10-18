@@ -20,6 +20,10 @@ module Spagmon
 
         attr_reader :receiver
 
+        def logger
+          Spagmon.logger
+        end
+
         def initialize(receiver)
           @receiver = receiver
         end

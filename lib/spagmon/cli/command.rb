@@ -16,7 +16,7 @@ module Spagmon
         attr_reader :args
 
         def initialize(args)
-          @args = args.freeze
+          @args = args
         end
 
       end
