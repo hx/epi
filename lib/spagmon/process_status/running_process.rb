@@ -26,9 +26,7 @@ module Spagmon
         def read_groups
           {}.tap do |result|
             File.readlines('/etc/group').each do |line|
-              if line =~ /^([^:]+):[^:]+:(-?\d+):/
-                result[$2.to_i] = $1
-              end
+              result[$2.to_i] = $1 if line =~ /^([^:]+):[^:]+:(-?\d+):/
             end
           end
         end
