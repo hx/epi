@@ -1,4 +1,3 @@
-require 'active_support/inflector'
 require 'eventmachine'
 require 'bson'
 

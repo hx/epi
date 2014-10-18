@@ -1,11 +1,13 @@
 require 'pathname'
 require 'logger'
 
+require 'spagmon/core_ext'
 require 'spagmon/exceptions'
 require 'spagmon/version'
 require 'spagmon/cli'
 require 'spagmon/beat'
 require 'spagmon/server'
+require 'spagmon/data'
 
 module Spagmon
   ROOT = Pathname File.expand_path('../..', __FILE__)
@@ -17,9 +19,8 @@ module Spagmon
     @logger ||= Logger.new(STDOUT)
   end
 
-  def self.perish(why)
-    STDOUT << why
-    STDOUT << "\n"
-    exit 1
+  def self.root?
+    @is_root = `whoami`.chomp == 'root' if @is_root.nil?
+    @is_root
   end
 end

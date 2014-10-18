@@ -18,6 +18,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'eventmachine', '~> 1.0'
-  spec.add_dependency 'activesupport', '~> 4.1'
   spec.add_dependency 'bson', '~> 2.3'
 end

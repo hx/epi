@@ -2,6 +2,7 @@ require_relative 'cli/command'
 
 module Spagmon
   module Cli
+    include Spagmon
 
     class << self
 
@@ -12,13 +13,6 @@ module Spagmon
         else
           Server::Sender.send command: {command: command, arguments: args}
         end
-      end
-
-      private
-
-      def root?
-        @is_root = `whoami`.chomp == 'root' if @is_root.nil?
-        @is_root
       end
 
     end

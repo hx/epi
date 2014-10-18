@@ -1,5 +1,3 @@
-require 'active_support/inflector'
-
 module Spagmon
   module Cli
     unless defined? Command
