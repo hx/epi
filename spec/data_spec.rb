@@ -23,8 +23,10 @@ describe Spagmon::Data do
 
     subject { Spagmon::Data.default_instance }
 
-    it 'should use "/etc/spagmon" or "~/.spagmon" as its home dir' do
-      expect(subject.home.to_s).to eq('/etc/spagmon').or eq(File.expand_path '~/.spagmon')
+    after { Spagmon::Data.reset! }
+
+    it 'should use "spec/.spagmon" as its home dir' do
+      expect(subject.home.to_s).to end_with '/spec/.spagmon'
     end
 
     it 'should have made its home directory' do

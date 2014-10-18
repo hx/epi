@@ -28,7 +28,7 @@ module Spagmon
           else nil
         end
 
-        EventMachine.run { EventMachine.connect HOST, PORT, Sender, data }
+        EventMachine.connect HOST, PORT, Sender, data
 
       end
 

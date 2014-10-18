@@ -2,16 +2,17 @@ require_relative 'cli/command'
 
 module Spagmon
   module Cli
-    include Spagmon
 
     class << self
 
       def run(args)
         command = args.shift
-        if root?
-          puts Command.run command, args
-        else
-          Server::Sender.send command: {command: command, arguments: args}
+        begin
+          Command.run command, args
+        rescue Exceptions::Fatal => error
+          STDERR << error.message
+          STDERR << "\n"
+          EventMachine.stop_event_loop
         end
       end
 

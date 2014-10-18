@@ -11,12 +11,22 @@ module Spagmon
     class << self
       extend Forwardable
 
-      delegate [:[], :[]=, :read, :write] => :default_instance
+      delegate [:[], :[]=, :read, :write, :root?] => :default_instance
+
+      %w[server_pid].each do |property|
+        define_method(property) { read property }
+        define_method(property + '=') { |value| write property, value }
+      end
 
       # Get the default data storage instance
       # @return [self]
       def default_instance
         @default_instance ||= new(detect_home_dir)
+      end
+
+      # Remove the default instance. Useful if the home path changes.
+      def reset!
+        @default_instance = nil
       end
 
       private
@@ -76,6 +86,7 @@ module Spagmon
         data = data.to_s
         path.parent.mkpath
         path.write data
+        path.chmod 0644
         data.length
       end
     end
@@ -92,6 +103,7 @@ module Spagmon
     # Save data to disk
     def save
       data_file.binwrite hash.to_bson
+      data_file.chmod 0644
     end
 
     def hash

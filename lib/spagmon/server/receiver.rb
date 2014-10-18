@@ -5,9 +5,14 @@ module Spagmon
   module Server
     class Receiver < EventMachine::Connection
 
+      def logger
+        Spagmon.logger
+      end
+
       def receive_data(data)
         response = begin
           data = Hash.from_bson StringIO.new data
+          logger.debug "Received message of type '#{data['type']}'"
           {result: Responder.run(self, data.delete('type').to_s, data)}
         rescue Exceptions::Shutdown
           self.should_shut_down = true
@@ -21,7 +26,7 @@ module Spagmon
         end
         response[:complete] = true
         send_data response.to_bson
-        EventMachine.next_tick { EventMachine.stop_event_loop } if should_shut_down
+        Server.shutdown if should_shut_down
       end
 
       def puts(text)

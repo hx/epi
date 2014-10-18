@@ -4,7 +4,8 @@ module Spagmon
       class Status < Command
 
         def run
-          'here is the status!'
+          Spagmon::Server.ensure_running
+          Spagmon::Server.send :status
         end
 
       end

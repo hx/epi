@@ -1,6 +1,6 @@
-describe Spagmon::ProcessStatus::RunningProcess do
+describe Spagmon::RunningProcess do
 
-  subject { Spagmon::ProcessStatus.now[$$] }
+  subject { Spagmon::RunningProcess.new($$) }
 
   it 'should tell us who is running it' do
     expect(subject.user).to eq `whoami`.chomp
@@ -33,6 +33,10 @@ describe Spagmon::ProcessStatus::RunningProcess do
 
   it 'should tell us the command, including arguments' do
     expect(subject.command).to match /\brspec\b/
+  end
+
+  it 'should tell us if the process is running as root' do
+    expect(subject.root?).to be `whoami`.chomp == 'root'
   end
 
 end

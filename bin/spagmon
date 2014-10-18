@@ -2,4 +2,5 @@
 lib = File.expand_path('../../lib', __FILE__)
 $: << lib unless $:.include? lib
 require 'spagmon'
-Spagmon::Cli.run ARGV if $0 == __FILE__
+require 'eventmachine'
+EventMachine.run { Spagmon::Cli.run ARGV } if $0 == __FILE__

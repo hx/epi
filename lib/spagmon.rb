@@ -9,6 +9,7 @@ require 'spagmon/beat'
 require 'spagmon/server'
 require 'spagmon/data'
 require 'spagmon/process_status'
+require 'spagmon/running_process'
 
 module Spagmon
   ROOT = Pathname File.expand_path('../..', __FILE__)

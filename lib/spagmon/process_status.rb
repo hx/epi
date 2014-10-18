@@ -1,5 +1,3 @@
-require_relative 'process_status/running_process'
-
 module Spagmon
   class ProcessStatus
 
