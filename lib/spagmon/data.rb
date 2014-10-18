@@ -73,8 +73,9 @@ module Spagmon
         path.delete if path.exist?
         nil
       else
+        data = data.to_s
         path.parent.mkpath
-        path.write data.to_s
+        path.write data
         data.length
       end
     end
