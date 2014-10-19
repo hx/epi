@@ -21,6 +21,8 @@ tmp
 *.a
 mkmf.log
 
+/spec/.spagmon/
+
 # For IDEA:
 /spagmon.iml
 /.idea/

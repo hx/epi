@@ -2,6 +2,7 @@ module Spagmon
   def self.beat!
 
     # Make sure configuration files have been read
+    Jobs.refresh_config!
 
     # Snapshot currently running processes
 

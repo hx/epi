@@ -18,6 +18,10 @@ module Spagmon
         define_method(property + '=') { |value| write property, value }
       end
 
+      def configuration_paths
+        self['configuration_paths'] ||= []
+      end
+
       # Get the default data storage instance
       # @return [self]
       def default_instance

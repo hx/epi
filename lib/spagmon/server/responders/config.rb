@@ -7,14 +7,15 @@ module Spagmon
 
         def run
           result = []
-          configs = Data['configurations'] ||= {}
+          configs = Data.configuration_paths
           add_paths.each do |path|
-            if configs.key?(path)
+            path = path.to_s
+            if configs.include?(path)
               logger.warn "Tried to re-add config path: #{path}"
               result << "Config path already loaded: #{path}"
             else
               logger.info "Adding config path: #{path}"
-              configs[path.to_s] ||= nil
+              configs << path
               result << "Added config path: #{path}"
             end
           end if add_paths

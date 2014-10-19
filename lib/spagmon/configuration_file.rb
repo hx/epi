@@ -7,25 +7,17 @@ module Spagmon
     extend Forwardable
     include Exceptions
 
-    def self.from_hash(hash)
-
-    end
-
-    attr_reader :path
+    attr_reader :path, :job_descriptions
 
     delegate [:exist?, :binread] => :path
 
     def initialize(path)
-      @jobs = {}
+      @job_descriptions = {}
       @path = Pathname path
     end
 
     def logger
       Spagmon.logger
-    end
-
-    def to_h
-
     end
 
     def read
@@ -54,9 +46,9 @@ module Spagmon
           block.respond_to?(:arity) &&
           block.arity >= 1
       id, name = id_and_name.first
-      job = @jobs[id] ||= JobDescription.new(id)
-      job.name = name
-      job.reconfigure &block
+      job_description = @job_descriptions[id] ||= JobDescription.new(id)
+      job_description.name = name
+      job_description.reconfigure &block
     end
 
   end
