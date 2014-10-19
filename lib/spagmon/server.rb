@@ -35,8 +35,8 @@ module Spagmon
       def run
         raise Exceptions::Fatal, 'Server already running' if running?
         Data.server_pid = Process.pid
-        Spagmon.beat!
-        EM.add_periodic_timer(5) { Spagmon.beat! }
+        Jobs.beat!
+        EM.add_periodic_timer(5) { Jobs.beat! }
         logger.info "Starting server on #{HOST}:#{PORT}"
         EM.start_server HOST, PORT, Receiver
       end

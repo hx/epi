@@ -7,6 +7,22 @@ module Spagmon
 
       attr_reader :configuration_files
 
+      def beat!
+        # Make sure configuration files have been read
+        refresh_config!
+
+        # Get rid of jobs for config files that have been removed
+        clean_configuration_files!
+
+        # Snapshot currently running processes
+
+        # Kill any jobs that shouldn't be running
+
+        # Process event handlers
+
+        # Start any jobs that should be running
+      end
+
       def job_descriptions
         configuration_files.inject({}) { |all, conf_file| all.merge! conf_file.job_descriptions }
       end
@@ -15,7 +31,6 @@ module Spagmon
         Data.configuration_paths.each do |path|
           configuration_files[path] ||= ConfigurationFile.new(path)
         end
-        clean_configuration_files!
         configuration_files.each_value &:read
       end
 
