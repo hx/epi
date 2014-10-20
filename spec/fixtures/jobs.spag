@@ -11,8 +11,8 @@ job resque: 'Resque Workers' do |j|
       PIDFILE: -> p { p.pidfile }
   }
   j.command = 'rake resque:work'
-  j.processes = 1..3
-  j.autostart = true
+  j.initial_processes = 2
+  j.allowed_processes = 1..3
   j.stdout = nil
   j.stderr = GEM_ROOT + 'log/errors.log'
   j.user = 'root'

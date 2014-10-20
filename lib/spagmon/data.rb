@@ -22,6 +22,14 @@ module Spagmon
         self['configuration_paths'] ||= []
       end
 
+      def processes
+        self['processes'] ||= {}
+      end
+
+      def processes=(value)
+        self['processes'] = value
+      end
+
       # Get the default data storage instance
       # @return [self]
       def default_instance

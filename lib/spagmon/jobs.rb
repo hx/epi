@@ -11,7 +11,7 @@ module Spagmon
     class << self
       extend Forwardable
 
-      delegate [:[], :[]=] => :@jobs
+      delegate [:[], :[]=, :delete, :each_value, :map] => :@jobs
 
       attr_reader :configuration_files
 
@@ -19,17 +19,25 @@ module Spagmon
         # Make sure configuration files have been read
         refresh_config!
 
-        # Get rid of jobs for config files that have been removed
-        clean_configuration_files!
-
         # Snapshot currently running processes
         ProcessStatus.take!
 
+        # Get rid of jobs for config files that have been removed
+        clean_configuration_files!
+
+        # Create new jobs
+        make_new_jobs!
+
         # Sync each job with its expectations
-        @jobs.each_value &:sync!
+        each_value &:sync!
+
+        # Write PIDs of each job to data file
+        Data.processes = map { |id, job| [id.to_s, job.pids] }.to_h
+        Data.save
       end
 
       def job_descriptions
+        # configuration_files.map(&:job_descriptions).inject &:merge
         configuration_files.inject({}) { |all, conf_file| all.merge! conf_file.job_descriptions }
       end
 
@@ -43,9 +51,18 @@ module Spagmon
       private
 
       def clean_configuration_files!
-        to_remove = @configuration_files.keys - Data.configuration_paths
+        to_remove = configuration_files.keys - Data.configuration_paths
         to_remove.each do |path|
-          # TODO: remove config for this path
+          configuration_files.delete(path).job_descriptions.each_key do |job_id|
+            job = delete(job_id)
+            job.terminate! if job
+          end
+        end
+      end
+
+      def make_new_jobs!
+        job_descriptions.each do |name, description|
+          self[name] ||= Job.new(description, 0, Data.processes[name])
         end
       end
 

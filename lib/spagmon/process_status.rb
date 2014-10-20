@@ -18,7 +18,7 @@ module Spagmon
       # @return [self]
       def last; @last ||= take! end
 
-      delegate [:[]] => :last
+      delegate [:[], :pids] => :last
 
     end
 
@@ -28,6 +28,12 @@ module Spagmon
     def [](pid)
       pid = pid.to_i
       @running_processes[pid] ||= find_by_pid(pid)
+    end
+
+    # Get a list of PIDs of running processes
+    # @return [Array] An array of PIDs as `Fixnum`s
+    def pids
+      @pids ||= @lines.keys
     end
 
     private
