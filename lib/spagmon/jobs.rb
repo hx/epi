@@ -37,8 +37,7 @@ module Spagmon
       end
 
       def job_descriptions
-        # configuration_files.map(&:job_descriptions).inject &:merge
-        configuration_files.inject({}) { |all, conf_file| all.merge! conf_file.job_descriptions }
+        configuration_files.values.inject({}) { |all, conf_file| all.merge! conf_file.job_descriptions }
       end
 
       def refresh_config!

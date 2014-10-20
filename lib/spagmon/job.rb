@@ -16,7 +16,7 @@ module Spagmon
     def sync!
 
       # Remove non-running PIDs from the list
-      self.pids &= ProcessStatus.pids
+      @pids &= ProcessStatus.pids
 
       # Run new processes
       start_one while running_count < expected_count
