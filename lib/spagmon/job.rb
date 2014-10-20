@@ -4,7 +4,7 @@ module Spagmon
     attr_reader :job_description, :pids
     attr_accessor :expected_count
 
-    def initialize(job_description, expected_count, pids)
+    def initialize(job_description, expected_count = 0, pids = nil)
       @job_description = job_description
       @expected_count = expected_count || 0
       @pids = pids || []

@@ -5,15 +5,17 @@ module Spagmon
   # Manages running jobs
   module Jobs
 
-    @configuration_files = {}
-    @jobs = {}
-
     class << self
       extend Forwardable
 
       delegate [:[], :[]=, :delete, :each_value, :map] => :@jobs
 
       attr_reader :configuration_files
+
+      def reset!
+        @configuration_files = {}
+        @jobs = {}
+      end
 
       def beat!
         # Make sure configuration files have been read
@@ -66,6 +68,9 @@ module Spagmon
       end
 
     end
+
+    # Set up class variables
+    reset!
 
   end
 end

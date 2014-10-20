@@ -9,11 +9,11 @@ job test: 'Test Job' do |j|
       TERM_CHILD: 1,
       PIDFILE: -> p { p.pidfile }
   }
-  j.command = 'rake resque:work'
-  j.initial_processes = 2
+  j.command = './test.rb'
+  j.initial_processes = 1
   j.allowed_processes = 1..3
-  j.stdout = File.expand_path('../test.out')
-  j.stderr = File.expand_path('../test.err')
+  j.stdout = File.expand_path('../test.out', __FILE__)
+  j.stderr = File.expand_path('../test.err', __FILE__)
   j.kill_timeout = 3.seconds
 
   j.on(:touch, __FILE__) { |p| p.restart! }

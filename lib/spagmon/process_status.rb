@@ -6,17 +6,27 @@ module Spagmon
     class << self
       extend Forwardable
 
+      def reset!
+        @last = nil
+      end
+
       # Current running processes
       # @return [self]
-      def now; new end
+      def now
+        new
+      end
 
       # Take a snapshot of current running processes
       # @return [self]
-      def take!; @last = now end
+      def take!
+        @last = now
+      end
 
       # The last snapshot taken by {#take}
       # @return [self]
-      def last; @last ||= take! end
+      def last
+        @last ||= take!
+      end
 
       delegate [:[], :pids] => :last
 
