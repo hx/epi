@@ -18,6 +18,10 @@ module Spagmon
       end
 
       def beat!
+
+        # Cancel any scheduled beats
+        EventMachine.cancel_timer @next_beat if @next_beat
+
         # Make sure configuration files have been read
         refresh_config!
 
@@ -36,6 +40,9 @@ module Spagmon
         # Write PIDs of each job to data file
         Data.processes = map { |id, job| [id.to_s, job.pids] }.to_h
         Data.save
+
+        # Schedule the next beat
+        @next_beat = EventMachine.add_timer(5) { beat! } # TODO: make interval configurable
       end
 
       def job_descriptions
@@ -63,7 +70,7 @@ module Spagmon
 
       def make_new_jobs!
         job_descriptions.each do |name, description|
-          self[name] ||= Job.new(description, 0, Data.processes[name])
+          self[name] ||= Job.new(description, nil, Data.processes[name])
         end
       end
 

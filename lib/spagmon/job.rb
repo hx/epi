@@ -1,12 +1,12 @@
 module Spagmon
   class Job
 
-    attr_reader :job_description, :pids
+    attr_reader :job_description, :pids, :dying_pids
     attr_accessor :expected_count
 
-    def initialize(job_description, expected_count = 0, pids = nil)
+    def initialize(job_description, expected_count, pids = nil)
       @job_description = job_description
-      @expected_count = expected_count || 0
+      @expected_count = expected_count || job_description.initial_processes
       @pids = pids || []
       @dying_pids = []
     end

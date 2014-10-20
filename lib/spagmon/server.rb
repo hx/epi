@@ -9,6 +9,8 @@ module Spagmon
 
     class << self
 
+      attr_reader :start_time
+
       def logger
         Spagmon.logger
       end
@@ -53,9 +55,6 @@ module Spagmon
         # Run an initial beat
         Jobs.beat!
 
-        # Schedule subsequent beats for every 5 seconds
-        EventMachine.add_periodic_timer(5) { Jobs.beat! } #TODO: make interval configurable
-
         # Start a server
         EventMachine.start_unix_domain_server socket_path.to_s, Receiver
         logger.info "Listening on socket #{socket_path}"
@@ -65,6 +64,8 @@ module Spagmon
 
         # Ensure the socket is destroyed when the server exits
         EventMachine.add_shutdown_hook { socket_path.delete }
+
+        @start_time = Time.now
       end
 
       def send(*args)

@@ -23,6 +23,7 @@ mkmf.log
 /log/*.log
 
 /spec/.spagmon/
+/spec/fixtures/test.???
 
 # For IDEA:
 /spagmon.iml
