@@ -1,8 +1,25 @@
+require 'forwardable'
+
 module Spagmon
   class ProcessStatus
 
-    def self.now
-      new
+    class << self
+      extend Forwardable
+
+      # Current running processes
+      # @return [self]
+      def now; new end
+
+      # Take a snapshot of current running processes
+      # @return [self]
+      def take!; @last = now end
+
+      # The last snapshot taken by {#take}
+      # @return [self]
+      def last; @last ||= take! end
+
+      delegate [:[]] => :last
+
     end
 
     # Lookup a running process by its PID

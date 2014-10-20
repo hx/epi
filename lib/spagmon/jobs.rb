@@ -1,9 +1,17 @@
+require 'forwardable'
+
 module Spagmon
+
+  # Manages running jobs
   module Jobs
 
     @configuration_files = {}
+    @jobs = {}
 
     class << self
+      extend Forwardable
+
+      delegate [:[], :[]=] => :@jobs
 
       attr_reader :configuration_files
 
@@ -15,12 +23,10 @@ module Spagmon
         clean_configuration_files!
 
         # Snapshot currently running processes
+        ProcessStatus.take!
 
-        # Kill any jobs that shouldn't be running
-
-        # Process event handlers
-
-        # Start any jobs that should be running
+        # Sync each job with its expectations
+        @jobs.each_value &:sync!
       end
 
       def job_descriptions

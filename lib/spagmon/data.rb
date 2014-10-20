@@ -11,7 +11,7 @@ module Spagmon
     class << self
       extend Forwardable
 
-      delegate [:[], :[]=, :read, :write, :root?, :save, :reload] => :default_instance
+      delegate [:[], :[]=, :read, :write, :root?, :save, :reload, :home] => :default_instance
 
       %w[server_pid].each do |property|
         define_method(property) { read property }

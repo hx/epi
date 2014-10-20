@@ -28,17 +28,43 @@ module Spagmon
           end
 
           logger.info 'Starting server'
-          %x(nohup #{$0} server run) if Process.fork.nil?
+          Spagmon.launch [$0, 'server', 'run'],
+                         stdout: Data.home + 'server.log',
+                         stderr: Data.home + 'server_errors.log'
+
+          begin
+            Timeout::timeout(5) { sleep 0.05 until socket_path.exist? }
+          rescue Timeout::Error
+            raise Exceptions::Fatal, 'Server not started after 5 seconds'
+          end unless socket_path.exist?
         end
+      end
+
+      def socket_path
+        Data.home + 'socket'
       end
 
       def run
         raise Exceptions::Fatal, 'Server already running' if running?
+
+        # Save the server PID
         Data.server_pid = Process.pid
+
+        # Run an initial beat
         Jobs.beat!
-        EM.add_periodic_timer(5) { Jobs.beat! }
-        logger.info "Starting server on #{HOST}:#{PORT}"
-        EM.start_server HOST, PORT, Receiver
+
+        # Schedule subsequent beats for every 5 seconds
+        EventMachine.add_periodic_timer(5) { Jobs.beat! } #TODO: make interval configurable
+
+        # Start a server
+        EventMachine.start_unix_domain_server socket_path.to_s, Receiver
+        logger.info "Listening on socket #{socket_path}"
+
+        # Make sure other users can connect to the server
+        socket_path.chmod 0777 #TODO: make configurable
+
+        # Ensure the socket is destroyed when the server exits
+        EventMachine.add_shutdown_hook { socket_path.delete }
       end
 
       def send(*args)
@@ -49,7 +75,6 @@ module Spagmon
       def shutdown(process = nil)
         process ||= self.process
         raise Exceptions::Fatal, 'Attempted to shut down server when no server is running' unless running?
-        logger.info 'Server will shut down'
         if process.pid == Process.pid
           EventMachine.next_tick do
             EventMachine.stop_event_loop
@@ -57,6 +82,7 @@ module Spagmon
             logger.info 'Server has shut down'
           end
         else
+          logger.info 'Server will shut down'
           send :shutdown
         end
       end
