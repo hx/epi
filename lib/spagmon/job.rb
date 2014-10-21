@@ -1,8 +1,13 @@
+require 'forwardable'
+
 module Spagmon
   class Job
+    extend Forwardable
 
     attr_reader :job_description, :pids, :dying_pids
     attr_accessor :expected_count
+
+    delegate [:name, :id, :allowed_processes] => :job_description
 
     def initialize(job_description, expected_count, pids = nil)
       @job_description = job_description
@@ -43,8 +48,8 @@ module Spagmon
     def stop_one
       pid = pids.shift
       @dying_pids << pid
-      work = -> { ProcessStatus[pid].kill job_description.kill_timeout }
-      done = -> { @dying_pids.delete pid }
+      work = proc { ProcessStatus[pid].kill job_description.kill_timeout }
+      done = proc { @dying_pids.delete pid }
       EventMachine.defer work, done
     end
 

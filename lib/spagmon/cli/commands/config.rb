@@ -1,5 +1,3 @@
-require 'eventmachine'
-
 module Spagmon
   module Cli
     module Commands

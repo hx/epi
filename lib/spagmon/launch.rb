@@ -18,22 +18,19 @@ module Spagmon
   # @return [Fixnum] The PID of the started process
   def self.launch(command, env: {}, user: nil, cwd: nil, stdout: true, stderr: true)
 
+    # Prevent hang-up
+    cmd = 'nohup '
+
     # The main command and its arguments
     if String === command
 
       # Pre-escaped string
-      cmd = command.dup
+      cmd << command
     else
 
       # Command and arguments that need to be escaped
-      cmd = command.map { |part| Shellwords.escape part }.join ' '
+      command.each { |part| cmd << ' ' << Shellwords.escape(part) }
     end
-
-    # Prevent hang-up
-    cmd = 'nohup ' << cmd
-
-    # Include the working directory
-    cmd = "(cd #{Shellwords.escape cwd} && #{cmd})" if cwd
 
     # Include `su` command if a user is given
     cmd = "su #{user} -c #{cmd}" if user
@@ -46,12 +43,17 @@ module Spagmon
     # Run in background, and return PID of backgrounded process
     cmd << ' & echo $!'
 
+    # Include the working directory
+    cmd = "cd #{Shellwords.escape cwd} && (#{cmd})" if cwd
+
     # Convert environment variables to strings, and merge them with the current environment
     env = ENV.to_h.merge(env).map { |k, v| [k.to_s, v.to_s] }.to_h
 
-    logger.debug "Launching #{cmd}"
+    logger.debug "Starting `#{cmd}`"
 
     # Run the command and read the resulting PID from its STDOUT
-    IO.popen(env, cmd).read.to_i
+    IO.popen(env, cmd) { |p| p.read }.to_i.tap do |pid|
+      logger.debug "Process #{pid} started: #{`ps -p #{pid} -o command=`.chomp}"
+    end
   end
 end

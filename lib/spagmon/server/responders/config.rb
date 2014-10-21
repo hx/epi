@@ -20,6 +20,7 @@ module Spagmon
             end
           end if add_paths
           Data.save
+          Jobs.beat!
           result.join ' '
         end
 

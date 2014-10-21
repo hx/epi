@@ -126,10 +126,10 @@ module Spagmon
     #   both (first TERM, then KILL).
     # @return [RunningProcess]
     def kill(timeout = DEFAULT_TIMEOUT)
-      if Numeric == timeout
+      if timeout.is_a? Numeric
         begin
           logger.info "Will wait #{timeout} seconds for process to terminate gracefully"
-          Timeout::timeout(timeout) { kill }
+          Timeout::timeout(timeout) { kill false }
         rescue Timeout::Error
           kill true
         end
@@ -137,7 +137,7 @@ module Spagmon
         signal = timeout ? 'KILL' : 'TERM'
         logger.info "Sending #{signal} to process #{pid}"
         Process.kill signal, pid
-        Process.waitpid pid
+        sleep 0.2 while `ps -p #{pid} > /dev/null 2>&1; echo $?`.chomp.to_i == 0
         logger.info "Process #{pid} terminated by signal #{signal}"
       end
       self

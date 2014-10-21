@@ -46,6 +46,7 @@ module Spagmon
           block.respond_to?(:arity) &&
           block.arity >= 1
       id, name = id_and_name.first
+      id = id.to_s
       job_description = @job_descriptions[id] ||= JobDescription.new(id)
       job_description.name = name
       job_description.reconfigure &block

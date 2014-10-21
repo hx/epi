@@ -70,7 +70,7 @@ module Spagmon
 
       def make_new_jobs!
         job_descriptions.each do |name, description|
-          self[name] ||= Job.new(description, nil, Data.processes[name])
+          self[name] ||= Spagmon::Job.new(description, nil, Data.processes[name])
         end
       end
 

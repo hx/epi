@@ -20,7 +20,8 @@ module Spagmon
         end
 
         def jobs
-          Jobs.map { |id, j| ["#{j.job_description.name} [#{id}]", job(j)] }.to_h
+          all = Jobs.map { |id, j| ["#{j.job_description.name} [#{id}]", job(j)] }.to_h
+          all.count > 0 ? all : 'none'
         end
 
         def job(j)
