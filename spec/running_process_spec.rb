@@ -32,7 +32,7 @@ describe Epi::RunningProcess do
   end
 
   it 'should tell us the command, including arguments' do
-    expect(subject.command).to match /\brspec\b/
+    expect(subject.command).to match /\b(rspec|rdebug)\b/
   end
 
   it 'should tell us if the process is running as root' do

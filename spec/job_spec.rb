@@ -3,7 +3,7 @@ require 'pathname'
 describe Epi::Job do
 
   let(:configuration_file) { Epi::ConfigurationFile.new SPEC_ROOT + 'fixtures/jobs.epi' }
-  let(:job_description) { configuration_file.tap(&:read).job_descriptions[:test] }
+  let(:job_description) { configuration_file.tap(&:read).job_descriptions['test'] }
   let(:out_path) { Pathname job_description.stdout }
   let(:err_path) { Pathname job_description.stderr }
 
@@ -12,7 +12,7 @@ describe Epi::Job do
     err_path.delete if err_path.exist?
   end
 
-  subject { Epi::Job.new job_description, 0 }
+  subject { Epi::Job.new job_description, {'expected_count' => 0} }
 
   specify 'fixtures should be set up' do
     expect(job_description).to be_a Epi::JobDescription
@@ -30,7 +30,7 @@ describe Epi::Job do
 
   end
 
-  describe 'one process running' do
+  describe 'one process running', with: :em do
 
     before :each do
       subject.expected_count = 1
@@ -58,8 +58,8 @@ describe Epi::Job do
     end
 
     it 'should report the PID of the process' do
-      expect(subject.pids.first).to be_a Fixnum
-      expect(`ps -p #{subject.pids.first} -o command=`).to include 'test.rb'
+      expect(subject.pids.values.first).to be_a Fixnum
+      expect(`ps -p #{subject.pids.values.first} -o command=`).to include 'test.rb'
     end
 
   end
