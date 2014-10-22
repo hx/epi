@@ -1,9 +1,8 @@
-require 'eventmachine'
-require 'bson'
+require_relative '../connection'
 
 module Epi
   module Daemon
-    class Sender < EventMachine::Connection
+    class Sender < Connection
       include Exceptions
 
       # Send a message to the Epi server
@@ -34,11 +33,14 @@ module Epi
 
       def initialize(data, callback)
         @callback = callback
-        send_data data.to_bson
+        send_object data
       end
 
-      def receive_data(data)
-        data = Hash.from_bson StringIO.new data
+      def receive_object(data)
+        if data['print']
+          STDOUT << data['print']
+          return
+        end
 
         if data.key? 'result'
           result = data['result']
@@ -62,10 +64,9 @@ module Epi
           end
 
           EM.stop
-
         end
 
-        close_connection if data['complete']
+        close_connection
       end
 
     end

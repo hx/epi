@@ -5,7 +5,14 @@ module Epi
 
         def run
           need_root!
-          Epi::Daemon.shutdown
+          raise Exceptions::Fatal, 'No daemon is running' unless Epi::Daemon.running?
+          Epi::Daemon.send(:stop_all) { shutdown }
+        end
+
+        private
+
+        def shutdown
+          Epi::Daemon.send :shutdown
           puts 'Shutting down ...'
         end
 

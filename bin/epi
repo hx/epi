@@ -8,7 +8,7 @@ if $0 == __FILE__
     %w[INT TERM].each do |s|
       Signal.trap(s) do
         puts " #{s} => bye for now!"
-        EventMachine.stop
+        EventMachine.stop rescue nil
       end
     end
     Epi::Cli.run ARGV

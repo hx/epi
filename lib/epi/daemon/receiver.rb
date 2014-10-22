@@ -1,21 +1,20 @@
-require 'eventmachine'
-require 'bson'
+require_relative '../connection'
 
 module Epi
   module Daemon
-    class Receiver < EventMachine::Connection
+    class Receiver < Connection
 
       def logger
         Epi.logger
       end
 
-      def receive_data(data)
+      def receive_object(data)
+        should_shut_down = false
         response = begin
-          data = Hash.from_bson StringIO.new data
           logger.debug "Received message of type '#{data['type']}'"
           {result: Responder.run(self, data.delete('type').to_s, data)}
         rescue Exceptions::Shutdown
-          self.should_shut_down = true
+          should_shut_down = true
           {result: nil}
         rescue => error
           {error: {
@@ -24,22 +23,17 @@ module Epi
               backtrace: error.backtrace
           }}
         end
-        response[:complete] = true
-        send_data response.to_bson
+        send_object response
         Daemon.shutdown if should_shut_down
       end
 
       def puts(text)
-        data = {
-            result: "#{text}\n",
-            complete: false
-        }
-        send_data data.to_bson
+        print "#{text}\n"
       end
 
-      private
-
-      attr_accessor :should_shut_down
+      def print(text)
+        send_object print: text.to_s
+      end
 
     end
   end
