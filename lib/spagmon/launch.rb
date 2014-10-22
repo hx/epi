@@ -36,7 +36,7 @@ module Spagmon
     cmd = "su #{user} -c #{cmd}" if user
 
     # STDOUT and STDERR redirection
-    {:> => stdout, :'2>' => stderr}.each do |arrow, dest|
+    {:>> => stdout, :'2>>' => stderr}.each do |arrow, dest|
       cmd << " #{arrow} #{dest || '/dev/null'}" unless TrueClass === dest
     end
 

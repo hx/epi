@@ -128,7 +128,7 @@ module Spagmon
     def kill(timeout = DEFAULT_TIMEOUT)
       if timeout.is_a? Numeric
         begin
-          logger.info "Will wait #{timeout} seconds for process to terminate gracefully"
+          logger.info "Will wait #{timeout} second#{timeout != 1 && 's'} for process to terminate gracefully"
           Timeout::timeout(timeout) { kill false }
         rescue Timeout::Error
           kill true

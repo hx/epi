@@ -22,12 +22,12 @@ module Spagmon
         end
 
         def set(count)
-          # TODO: validate count
+          allowed = job.allowed_processes
+          raise Exceptions::Fatal, "Requested count #{count} is outside allowed range #{allowed}" unless allowed === count
           original = job.expected_count
-          # TODO: ensure difference
+          raise Exceptions::Fatal, "Already running #{count} process#{count != 1 && 'es'}" unless original != count
           job.expected_count = count
           job.sync!
-          # TODO: update expected count in data file
           "#{count < original ? 'De' : 'In'}creasing '#{job.name}' processes by #{(original - count).abs} (from #{original} to #{count})"
         end
 

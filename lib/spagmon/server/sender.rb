@@ -44,8 +44,13 @@ module Spagmon
 
         elsif data['error']
           error = data['error']
-          puts "#{error['class']}: #{error['message']}"
-          error['backtrace'].each { |x| puts '  ' << x }
+          if error['class'] == Fatal.name
+            STDERR << error['message']
+            STDERR << "\n"
+          else
+            puts "#{error['class']}: #{error['message']}"
+            error['backtrace'].each { |x| puts '  ' << x }
+          end
         end
 
         if data['complete']

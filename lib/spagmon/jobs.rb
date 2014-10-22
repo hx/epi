@@ -37,8 +37,8 @@ module Spagmon
         # Sync each job with its expectations
         each_value &:sync!
 
-        # Write PIDs of each job to data file
-        Data.processes = map { |id, job| [id.to_s, job.pids] }.to_h
+        # Write state of each job to data file
+        Data.jobs = map { |id, job| [id.to_s, job.state] }.to_h
         Data.save
 
         # Schedule the next beat
@@ -70,7 +70,7 @@ module Spagmon
 
       def make_new_jobs!
         job_descriptions.each do |name, description|
-          self[name] ||= Spagmon::Job.new(description, nil, Data.processes[name])
+          self[name] ||= Spagmon::Job.new(description, Data.jobs[name] || {})
         end
       end
 

@@ -30,7 +30,7 @@ module Spagmon
         end
 
         def processes(pids, state = nil)
-          pids.map do |pid|
+          pids.values.map do |pid|
             name = 'PID ' << pid.to_s
             name << " [#{state}]" if state
             [name, process(pid)]
