@@ -11,7 +11,7 @@ job test: 'Test Job' do |j|
   }
   j.command = './test.rb'
   j.initial_processes = 1
-  j.allowed_processes = 1..3
+  j.allowed_processes = 0..3
   j.stdout = File.expand_path('../test.out', __FILE__)
   j.stderr = File.expand_path('../test.err', __FILE__)
   j.kill_timeout = 3.seconds

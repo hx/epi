@@ -3,4 +3,14 @@ lib = File.expand_path('../../lib', __FILE__)
 $: << lib unless $:.include? lib
 require 'spagmon'
 require 'eventmachine'
-EventMachine.run { Spagmon::Cli.run ARGV } if $0 == __FILE__
+if $0 == __FILE__
+  EventMachine.run do
+    %w[INT TERM].each do |s|
+      Signal.trap(s) do
+        puts "Shutting down after signal #{s}"
+        EventMachine.stop
+      end
+    end
+    Spagmon::Cli.run ARGV
+  end
+end

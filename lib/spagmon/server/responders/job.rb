@@ -21,11 +21,11 @@ module Spagmon
           @job ||= Jobs[id]
         end
 
-        def set(count)
+        def set(count, validate = true)
           allowed = job.allowed_processes
-          raise Exceptions::Fatal, "Requested count #{count} is outside allowed range #{allowed}" unless allowed === count
+          raise Exceptions::Fatal, "Requested count #{count} is outside allowed range #{allowed}" unless !validate || allowed === count
           original = job.expected_count
-          raise Exceptions::Fatal, "Already running #{count} process#{count != 1 && 'es'}" unless original != count
+          raise Exceptions::Fatal, "Already running #{count} process#{count != 1 ? 'es' : ''}" unless !validate || original != count
           job.expected_count = count
           job.sync!
           "#{count < original ? 'De' : 'In'}creasing '#{job.name}' processes by #{(original - count).abs} (from #{original} to #{count})"
@@ -48,15 +48,20 @@ module Spagmon
         end
 
         def pause
-
+          set 0
         end
 
         def resume
-
+          set job.job_description.initial_processes
         end
+        alias_method :reset, :resume
 
         def restart
-
+          count = job.expected_count
+          raise Exceptions::Fatal, 'This job has no processes to restart' if count == 0
+          set 0, false
+          set count
+          "Replacing #{count} '#{job.name}' process#{count != 1 ? 'es' : ''}"
         end
 
       end
