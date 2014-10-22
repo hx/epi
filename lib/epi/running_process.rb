@@ -43,7 +43,7 @@ module Epi
     end
 
     def initialize(pid, ps_line = nil)
-      @pid = pid
+      @pid = pid.to_i
       @ps_line = ps_line
       @props = {}
       reload! unless ps_line

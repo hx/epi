@@ -16,7 +16,7 @@ module Epi
           {result: Responder.run(self, data.delete('type').to_s, data)}
         rescue Exceptions::Shutdown
           self.should_shut_down = true
-          {}
+          {result: nil}
         rescue => error
           {error: {
               class: error.class.name,

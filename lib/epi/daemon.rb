@@ -68,15 +68,14 @@ module Epi
         @start_time = Time.now
       end
 
-      def send(*args)
+      def send(*args, &callback)
         ensure_running
-        Sender.send *args
+        Sender.send *args, &callback
       end
 
       def shutdown(process = nil)
-        process ||= self.process
         raise Exceptions::Fatal, 'Attempted to shut down daemon when no daemon is running' unless running?
-        if process.pid == Process.pid
+        if (process || self.process).pid == Process.pid
           EventMachine.next_tick do
             EventMachine.stop_event_loop
             Data.daemon_pid = nil
