@@ -2,7 +2,7 @@ require 'eventmachine'
 require 'bson'
 
 module Epi
-  module Server
+  module Daemon
     class Sender < EventMachine::Connection
       include Exceptions
 
@@ -28,7 +28,7 @@ module Epi
           else nil
         end
 
-        EventMachine.connect Server.socket_path.to_s, Sender, data
+        EventMachine.connect Daemon.socket_path.to_s, Sender, data
 
       end
 

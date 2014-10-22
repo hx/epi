@@ -10,7 +10,7 @@ module Epi
           raise Exceptions::Fatal, 'No instruction given' if instruction.empty?
           raise Exceptions::Fatal, 'Invalid instruction' unless
               instruction =~ /^((\d+ )?(more|less)|\d+|pause|resume|reset|max|min|restart)$/
-          Epi::Server.send job: {id: id, instruction: instruction}
+          Epi::Daemon.send job: {id: id, instruction: instruction}
         end
 
       end

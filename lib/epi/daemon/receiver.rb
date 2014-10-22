@@ -2,7 +2,7 @@ require 'eventmachine'
 require 'bson'
 
 module Epi
-  module Server
+  module Daemon
     class Receiver < EventMachine::Connection
 
       def logger
@@ -16,7 +16,7 @@ module Epi
           {result: Responder.run(self, data.delete('type').to_s, data)}
         rescue Exceptions::Shutdown
           self.should_shut_down = true
-          {result: 'Server is shutting down'}
+          {}
         rescue => error
           {error: {
               class: error.class.name,
@@ -26,7 +26,7 @@ module Epi
         end
         response[:complete] = true
         send_data response.to_bson
-        Server.shutdown if should_shut_down
+        Daemon.shutdown if should_shut_down
       end
 
       def puts(text)

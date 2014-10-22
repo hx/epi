@@ -1,10 +1,11 @@
 module Epi
   module Cli
     module Commands
-      class Status < Command
+      class Daemon < Command
 
         def run
-          Epi::Daemon.send :status
+          Epi::Daemon.run
+          puts 'Daemon is running'
         end
 
       end

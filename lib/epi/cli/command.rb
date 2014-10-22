@@ -19,6 +19,12 @@ module Epi
           @args = args
         end
 
+        def need_root!
+          process = Epi::Daemon.process
+          raise Exceptions::Fatal, 'You need root privileges to manage this daemon' if
+              process && process.was_alive? && process.root? && !Epi.root?
+        end
+
       end
 
       Dir[File.expand_path '../commands/*.rb', __FILE__].each { |f| require f }

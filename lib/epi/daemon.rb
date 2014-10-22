@@ -1,11 +1,11 @@
 require 'eventmachine'
 
-require_relative 'server/sender'
-require_relative 'server/receiver'
-require_relative 'server/responder'
+require_relative 'daemon/sender'
+require_relative 'daemon/receiver'
+require_relative 'daemon/responder'
 
 module Epi
-  module Server
+  module Daemon
 
     class << self
 
@@ -19,7 +19,7 @@ module Epi
         should_run_as_root = Data.root?
 
         if running? && should_run_as_root && !process.root?
-          logger.info "Server needs to run as root, but is running as #{process.user}"
+          logger.info "Daemon needs to run as root, but is running as #{process.user}"
           shutdown
         end
 
@@ -29,15 +29,15 @@ module Epi
                 'or specify EPI_HOME as a directory other than /etc/epi'
           end
 
-          logger.info 'Starting server'
-          Epi.launch [$0, 'server', 'run'],
-                         stdout: Data.home + 'server.log',
-                         stderr: Data.home + 'server_errors.log'
+          logger.info 'Starting daemon'
+          Epi.launch [$0, 'daemon'],
+                     stdout: Data.home + 'daemon.log',
+                     stderr: Data.home + 'daemon_errors.log'
 
           begin
             Timeout::timeout(5) { sleep 0.05 until socket_path.exist? }
           rescue Timeout::Error
-            raise Exceptions::Fatal, 'Server not started after 5 seconds'
+            raise Exceptions::Fatal, 'Daemon not started after 5 seconds'
           end unless socket_path.exist?
         end
       end
@@ -47,22 +47,22 @@ module Epi
       end
 
       def run
-        raise Exceptions::Fatal, 'Server already running' if running?
+        raise Exceptions::Fatal, 'Daemon already running' if running?
 
-        # Save the server PID
-        Data.server_pid = Process.pid
+        # Save the daemon PID
+        Data.daemon_pid = Process.pid
 
         # Run an initial beat
         Jobs.beat!
 
-        # Start a server
+        # Start a daemon
         EventMachine.start_unix_domain_server socket_path.to_s, Receiver
         logger.info "Listening on socket #{socket_path}"
 
-        # Make sure other users can connect to the server
+        # Make sure other users can connect to the daemon
         socket_path.chmod 0777 #TODO: make configurable
 
-        # Ensure the socket is destroyed when the server exits
+        # Ensure the socket is destroyed when the daemon exits
         EventMachine.add_shutdown_hook { socket_path.delete }
 
         @start_time = Time.now
@@ -75,15 +75,15 @@ module Epi
 
       def shutdown(process = nil)
         process ||= self.process
-        raise Exceptions::Fatal, 'Attempted to shut down server when no server is running' unless running?
+        raise Exceptions::Fatal, 'Attempted to shut down daemon when no daemon is running' unless running?
         if process.pid == Process.pid
           EventMachine.next_tick do
             EventMachine.stop_event_loop
-            Data.server_pid = nil
-            logger.info 'Server has shut down'
+            Data.daemon_pid = nil
+            logger.info 'Daemon has shut down'
           end
         else
-          logger.info 'Server will shut down'
+          logger.info 'Daemon will shut down'
           send :shutdown
         end
       end
@@ -93,9 +93,9 @@ module Epi
       end
 
       def process
-        server_pid = Data.server_pid
-        @process = nil if @process && @process.pid != server_pid
-        @process ||= server_pid && RunningProcess.new(server_pid)
+        daemon_pid = Data.daemon_pid
+        @process = nil if @process && @process.pid != daemon_pid
+        @process ||= daemon_pid && RunningProcess.new(daemon_pid)
       end
 
     end

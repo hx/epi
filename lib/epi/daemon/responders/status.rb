@@ -1,5 +1,5 @@
 module Epi
-  module Server
+  module Daemon
     module Responders
       # noinspection RubyStringKeysInHashInspection
       class Status < Responder
@@ -14,7 +14,7 @@ module Epi
         def stats
           {
               'Running as' => `whoami`.chomp,
-              'Since' => Server.start_time.strftime('%c'),
+              'Since' => Daemon.start_time.strftime('%c'),
               'Jobs' => jobs
           }
         end

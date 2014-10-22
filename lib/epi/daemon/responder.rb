@@ -1,5 +1,5 @@
 module Epi
-  module Server
+  module Daemon
     unless defined? Responder
       class Responder
         include Exceptions

@@ -19,7 +19,7 @@ module Epi
             path = Pathname('.').realpath.join(path) unless path.absolute?
             path.to_s
           end
-          Epi::Server.send config: {add_paths: paths}
+          Epi::Daemon.send config: {add_paths: paths}
         end
 
       end

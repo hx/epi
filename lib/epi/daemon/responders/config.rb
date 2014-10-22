@@ -1,5 +1,5 @@
 module Epi
-  module Server
+  module Daemon
     module Responders
       class Config < Responder
 

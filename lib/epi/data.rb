@@ -13,7 +13,7 @@ module Epi
 
       delegate [:[], :[]=, :read, :write, :root?, :save, :reload, :home] => :default_instance
 
-      %w[server_pid].each do |property|
+      %w[daemon_pid].each do |property|
         define_method(property) { read property }
         define_method(property + '=') { |value| write property, value }
       end

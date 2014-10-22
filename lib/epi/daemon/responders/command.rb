@@ -1,12 +1,12 @@
 module Epi
-  module Server
+  module Daemon
     module Responders
-      class Shutdown < Responder
+      class Command < Responder
 
         attr_accessor :command, :arguments
 
         def run
-          raise Exceptions::Shutdown
+          Cli::Command.run command, arguments
         end
 
       end
