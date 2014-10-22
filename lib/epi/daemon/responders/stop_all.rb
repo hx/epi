@@ -4,9 +4,14 @@ module Epi
       # noinspection RubyStringKeysInHashInspection
       class StopAll < Responder
 
-        def run
-          puts 'Stopping all processes ...'
-          # TODO: stop them. For reals.
+        def run_async
+          count = Jobs.running_process_count
+          if count > 0
+            puts "Stopping #{count} process#{count == 1 ? '' : 'es'} ..."
+            Jobs.shutdown! { done }
+          else
+            done
+          end
         end
 
       end

@@ -136,7 +136,7 @@ module Epi
       else
         signal = timeout ? 'KILL' : 'TERM'
         logger.info "Sending #{signal} to process #{pid}"
-        Process.kill signal, pid
+        Process.kill signal, pid rescue Errno::ESRCH false
         sleep 0.2 while `ps -p #{pid} > /dev/null 2>&1; echo $?`.chomp.to_i == 0
         logger.info "Process #{pid} terminated by signal #{signal}"
       end

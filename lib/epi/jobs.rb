@@ -8,7 +8,7 @@ module Epi
     class << self
       extend Forwardable
 
-      delegate [:[], :[]=, :delete, :each_value, :map] => :@jobs
+      delegate [:[], :[]=, :delete, :each_value, :map, :find, :count] => :@jobs
 
       attr_reader :configuration_files
 
@@ -43,6 +43,26 @@ module Epi
 
         # Schedule the next beat
         @next_beat = EventMachine.add_timer(5) { beat! } # TODO: make interval configurable
+      end
+
+      def shutdown!(&callback)
+        EventMachine.cancel_timer @next_beat if @next_beat
+        ProcessStatus.take!
+        remaining = count
+        if remaining > 0
+          each_value do |job|
+            job.shutdown! do
+              remaining -= 1
+              callback.call if callback && remaining == 0
+            end
+          end
+        else
+          callback.call if callback
+        end
+      end
+
+      def running_process_count
+        each_value.map(&:running_count).reduce :+
       end
 
       def job_descriptions

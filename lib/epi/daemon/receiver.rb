@@ -9,22 +9,19 @@ module Epi
       end
 
       def receive_object(data)
-        should_shut_down = false
-        response = begin
-          logger.debug "Received message of type '#{data['type']}'"
-          {result: Responder.run(self, data.delete('type').to_s, data)}
+        logger.debug "Received message of type '#{data['type']}'"
+        begin
+          Responder.run(self, data.delete('type').to_s, data) { |result| send_object result: result }
         rescue Exceptions::Shutdown
-          should_shut_down = true
-          {result: nil}
+          send_object result: nil
+          Daemon.shutdown
         rescue => error
-          {error: {
+          send_object error: {
               class: error.class.name,
               message: error.message,
               backtrace: error.backtrace
-          }}
+          }
         end
-        send_object response
-        Daemon.shutdown if should_shut_down
       end
 
       def puts(text)

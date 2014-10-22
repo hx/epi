@@ -76,6 +76,20 @@ module Epi
       stop_one while running_count > expected_count
     end
 
+    def shutdown!(&callback)
+      count = running_count
+      if count > 0
+        count.times do
+          stop_one do
+            count -= 1
+            callback.call if callback && count == 0
+          end
+        end
+      else
+        callback.call if callback
+      end
+    end
+
     def terminate!
       self.expected_count = 0
       sync!
@@ -83,6 +97,10 @@ module Epi
 
     def running_count
       pids.count
+    end
+
+    def dying_count
+      dying_pids.count
     end
 
     private
@@ -93,7 +111,7 @@ module Epi
       Data.write pid_key(proc_id), pid
     end
 
-    def stop_one
+    def stop_one(&callback)
       proc_id, pid = pids.shift
       dying_pids[proc_id] = pid
       work = proc do
@@ -102,6 +120,7 @@ module Epi
       done = proc do
         dying_pids.delete proc_id
         Data.write pid_key(proc_id), nil
+        callback.call if callback
       end
       EventMachine.defer work, done
     end
