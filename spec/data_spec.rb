@@ -1,8 +1,8 @@
-describe Spagmon::Data do
+describe Epi::Data do
 
   describe 'instances' do
 
-    subject { Spagmon::Data.new(SPEC_ROOT + '.spagmon') }
+    subject { Epi::Data.new(SPEC_ROOT + '.epi') }
 
     it 'should act like a hash' do
       subject[:foo] = 123
@@ -21,27 +21,27 @@ describe Spagmon::Data do
 
   describe 'default instance' do
 
-    subject { Spagmon::Data.default_instance }
+    subject { Epi::Data.default_instance }
 
-    after { Spagmon::Data.reset! }
+    after { Epi::Data.reset! }
 
-    it 'should use "spec/.spagmon" as its home dir' do
-      expect(subject.home.to_s).to end_with '/spec/.spagmon'
+    it 'should use "spec/.epi" as its home dir' do
+      expect(subject.home.to_s).to end_with '/spec/.epi'
     end
 
     it 'should have made its home directory' do
       expect(subject.home).to exist
     end
 
-    it 'should only be root if it is using "/etc/spagmon" for storage' do
-      expect(subject.root?).to be (subject.home.to_s == '/etc/spagmon')
+    it 'should only be root if it is using "/etc/epi" for storage' do
+      expect(subject.root?).to be (subject.home.to_s == '/etc/epi')
     end
 
   end
 
   describe 'class methods' do
 
-    subject { Spagmon::Data }
+    subject { Epi::Data }
     let(:default_instance) { subject.default_instance }
 
     it 'should behave as a hash on behalf of the default instance' do

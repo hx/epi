@@ -1,10 +1,10 @@
-describe Spagmon::ProcessStatus do
+describe Epi::ProcessStatus do
 
-  subject { Spagmon::ProcessStatus.now }
+  subject { Epi::ProcessStatus.now }
   let(:current_process) { subject[$$] }
 
   it 'should include the currently running process' do
-    expect(current_process).to be_a Spagmon::RunningProcess
+    expect(current_process).to be_a Epi::RunningProcess
     expect(current_process.pid).to be $$
   end
 

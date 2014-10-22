@@ -22,9 +22,9 @@ tmp
 mkmf.log
 /log/*.log
 
-/spec/.spagmon/
+/spec/.epi/
 /spec/fixtures/test.???
 
 # For IDEA:
-/spagmon.iml
+/epi.iml
 /.idea/

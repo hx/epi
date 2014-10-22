@@ -1,8 +1,8 @@
 require 'pathname'
 
-describe Spagmon::Job do
+describe Epi::Job do
 
-  let(:configuration_file) { Spagmon::ConfigurationFile.new SPEC_ROOT + 'fixtures/jobs.spag' }
+  let(:configuration_file) { Epi::ConfigurationFile.new SPEC_ROOT + 'fixtures/jobs.epi' }
   let(:job_description) { configuration_file.tap(&:read).job_descriptions[:test] }
   let(:out_path) { Pathname job_description.stdout }
   let(:err_path) { Pathname job_description.stderr }
@@ -12,10 +12,10 @@ describe Spagmon::Job do
     err_path.delete if err_path.exist?
   end
 
-  subject { Spagmon::Job.new job_description, 0 }
+  subject { Epi::Job.new job_description, 0 }
 
   specify 'fixtures should be set up' do
-    expect(job_description).to be_a Spagmon::JobDescription
+    expect(job_description).to be_a Epi::JobDescription
     expect(job_description.name).to eq 'Test Job'
     expect(Pathname job_description.stdout).not_to exist
     expect(Pathname job_description.stderr).not_to exist

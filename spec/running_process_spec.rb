@@ -1,6 +1,6 @@
-describe Spagmon::RunningProcess do
+describe Epi::RunningProcess do
 
-  subject { Spagmon::RunningProcess.new($$) }
+  subject { Epi::RunningProcess.new($$) }
 
   it 'should tell us who is running it' do
     expect(subject.user).to eq `whoami`.chomp

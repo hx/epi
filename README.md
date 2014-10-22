@@ -1,16 +1,16 @@
-# Spagmon
+# Epinephrine
 
 Keeps your workers alive.
 
 ## Installation
 
 ```
-$ gem install spagmon
+$ gem install epi
 ```
 
 ## Configuration
 
-Example `config.spag`:
+Example `config.epi`:
 
 ```ruby
 job resque: 'Resque Workers' do |j|
@@ -33,19 +33,19 @@ job resque: 'Resque Workers' do |j|
 end
 ```
 
-Tell Spagmon to watch this config file:
+Tell Epi to watch this config file:
 
 ```
-$ spagmon config add config.spag
-Added configuration file: /home/my_app/config.spag
+$ epi config add config.epi
+Added configuration file: /home/my_app/config.epi
 ```
 
 ## Behaviour
 
-See what Spagmon is up to:
+See what Epi is up to:
 
 ```
-$ spagmon status
+$ epi status
 ---
 Running as: root
 Since: Mon 20 Oct 2014 15:27:04
@@ -64,31 +64,31 @@ Jobs:
 Start/stop workers:
 
 ```
-$ spagmon job resque more
+$ epi job resque more
 Increasing 'Resque Workers' processes by 1 (from 2 to 3)
-$ spagmon job resque 2 less
+$ epi job resque 2 less
 Decreasing 'Resque Workers' processes by 2 (from 3 to 1)
-$ spagmon job resque 4
+$ epi job resque 4
 Increasing 'Resque Workers' processes by 3 (from 1 to 4)
-$ spagmon job resque pause
+$ epi job resque pause
 Decreasing 'Resque Workers' processes by 4 (from 4 to 0)
-$ spagmon job resque resume
+$ epi job resque resume
 Increasing 'Resque Workers' processes by 4 (from 0 to 4)
-$ spagmon job resque max
+$ epi job resque max
 Increasing 'Resque Workers' processes by 1 (from 4 to 5)
-$ spagmon job resque restart
+$ epi job resque restart
 Replacing 5 'Resque Workers' processes
 ```
 
-Control the Spagmon daemon, and all its managed processes:
+Control the Epi daemon, and all its managed processes:
 
 ```
-$ spagmon stop
+$ epi stop
 Stopping 5 workers ...
 Shutting down ...
-$ spagmon start
+$ epi start
 Starting 5 workers ...
-$ spagmon restart
+$ epi restart
 Stopping 5 workers ...
 Shutting down ...
 Starting 5 workers ...
@@ -98,8 +98,8 @@ Config files will be reloaded whenever they change.
 
 ## Running as other users
 
-You can only configure jobs to run as other users if the Spagmon daemon runs as root.
+You can only configure jobs to run as other users if the Epi daemon runs as root.
 
-The daemon is started the first time you run the `spagmon` command, as whatever user ran it. If `spagmon` is ever run by `root`, the original user's daemon will be replaced by a daemon owned by `root`. Once that's happened, Spagmon will complain if you try to start or stop the daemon as any other user.
+The daemon is started the first time you run the `epi` command, as whatever user ran it. If `epi` is ever run by `root`, the original user's daemon will be replaced by a daemon owned by `root`. Once that's happened, Epi will complain if you try to start or stop the daemon as any other user.
 
-Spagmon recognises the history of its daemon running as root by the presence of data in `/etc/spagmon`. You can force it to use a particular user's data instead by setting the `SPAGMON_HOME` environment variable to, for example, `~/.spagmon`.
+Epi recognises the history of its daemon running as root by the presence of data in `/etc/epi`. You can force it to use a particular user's data instead by setting the `EPI_HOME` environment variable to, for example, `~/.epi`.
