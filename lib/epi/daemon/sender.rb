@@ -8,10 +8,10 @@ module Epi
       # Send a message to the Epi server
       #
       # @example Get Epi's status
-      #   Sender.send command: {command: 'status', arguments: []}
+      #   Sender.send :status
       #
-      # @example Shut down the server
-      #   Sender.send :shutdown
+      # @example Add a config file
+      #   Sender.send config: {add_paths: ['config.epi']}
       #
       # @param what [Hash|Symbol] Either a symbol being the message type, or a hash
       #   with a single key (a symbol) being the message type, and value (a hash) being the message.
@@ -37,13 +37,13 @@ module Epi
       end
 
       def receive_object(data)
-        if data['print']
-          STDOUT << data['print']
+        if data[:print]
+          STDOUT << data[:print]
           return
         end
 
-        if data.key? 'result'
-          result = data['result']
+        if data.key? :result
+          result = data[:result]
 
           if @callback
             @callback.call result
@@ -52,15 +52,15 @@ module Epi
             EM.stop
           end
 
-        elsif data['error']
+        elsif data[:error]
 
-          error = data['error']
-          if error['class'] == Fatal.name
-            STDERR << error['message']
+          error = data[:error]
+          if error[:class] == Fatal.name
+            STDERR << error[:message]
             STDERR << "\n"
           else
-            STDERR << "#{error['class']}: #{error['message']}\n"
-            error['backtrace'].each { |x| STDERR << "\t#{x}\n" }
+            STDERR << "#{error[:class]}: #{error[:message]}\n"
+            error[:backtrace].each { |x| STDERR << "\t#{x}\n" }
           end
 
           EM.stop

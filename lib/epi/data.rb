@@ -1,5 +1,4 @@
 require 'pathname'
-require 'bson'
 require 'forwardable'
 
 module Epi
@@ -104,7 +103,7 @@ module Epi
     end
 
     def data_file
-      @data_file ||= home + 'data.bson'
+      @data_file ||= home + 'data'
     end
 
     # Force reload of data from disk
@@ -114,12 +113,12 @@ module Epi
 
     # Save data to disk
     def save
-      data_file.binwrite hash.to_bson
+      data_file.binwrite Marshal.dump hash
       data_file.chmod 0644
     end
 
     def hash
-      @hash ||= data_file.exist? ? Hash.from_bson(StringIO.new data_file.binread) : {}
+      @hash ||= data_file.exist? ? Marshal.load(data_file.binread) : {}
     end
 
     # Returns true if using root data at /etc/epi, or false if using user data

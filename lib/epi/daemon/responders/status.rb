@@ -1,3 +1,5 @@
+require 'yaml'
+
 module Epi
   module Daemon
     module Responders

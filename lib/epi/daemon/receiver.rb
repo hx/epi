@@ -9,9 +9,9 @@ module Epi
       end
 
       def receive_object(data)
-        logger.debug "Received message of type '#{data['type']}'"
+        logger.debug "Received message of type '#{data[:type]}'"
         begin
-          Responder.run(self, data.delete('type').to_s, data) { |result| send_object result: result }
+          Responder.run(self, data.delete(:type).to_s, data) { |result| send_object result: result }
         rescue Exceptions::Shutdown
           send_object result: nil
           Daemon.shutdown
