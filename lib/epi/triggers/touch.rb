@@ -13,6 +13,10 @@ module Epi
         ino != @ino || mtime != @mtime
       end
 
+      def message
+        "Path '#{path}' was touched"
+      end
+
       private
 
       def path

@@ -30,6 +30,7 @@ job resque: 'Resque Workers' do |j|
 
   j.on(:touch, __FILE__) { |job| job.restart! }
   j.on(:memory, :gt, 350.megabytes) { |process| process.restart! }
+  j.on(:uptime, :gt, 1.day) { |process| process.restart! }
 end
 ```
 

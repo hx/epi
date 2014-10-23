@@ -63,7 +63,7 @@ module Epi
 
     def find_by_pid(pid)
       line = @lines[pid]
-      RunningProcess.new(pid, line) if line
+      RunningProcess.new(pid, ps_line: line) if line
     end
 
 

@@ -10,11 +10,12 @@ module Epi
 
       delegate [:[], :[]=, :delete, :each_value, :map, :find, :count] => :@jobs
 
-      attr_reader :configuration_files
+      attr_reader :configuration_files, :by_pid
 
       def reset!
         @configuration_files = {}
         @jobs = {}
+        @by_pid = {}
       end
 
       def beat!
@@ -36,6 +37,13 @@ module Epi
 
         # Sync each job with its expectations
         each_value &:sync!
+
+        # Snapshot processes again, so that triggers have access to
+        # newly-spawned processes
+        ProcessStatus.take!
+
+        # Run job triggers
+        each_value &:run_triggers!
 
         # Write state of each job to data file
         Data.jobs = map { |id, job| [id.to_s, job.state] }.to_h

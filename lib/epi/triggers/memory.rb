@@ -7,6 +7,10 @@ module Epi
         compare process.physical_memory
       end
 
+      def message
+        "Physical memory exceeded #{object} bytes"
+      end
+
     end
   end
 end

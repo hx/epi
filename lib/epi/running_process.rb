@@ -42,10 +42,11 @@ module Epi
       Epi.logger
     end
 
-    def initialize(pid, ps_line = nil)
+    def initialize(pid, ps_line: nil, job: nil)
       @pid = pid.to_i
       @ps_line = ps_line
       @props = {}
+      @job = job
       reload! unless ps_line
     end
 
@@ -96,6 +97,12 @@ module Epi
       @started_at ||= Time.parse parts[5..9].join ' '
     end
 
+    # Duration the process has been running (in seconds)
+    # @return [Float]
+    def uptime
+      Time.now - started_at
+    end
+
     # Name of the user that owns the process
     # @return [String]
     def user
@@ -143,8 +150,19 @@ module Epi
       self
     end
 
+    # Kill a running process immediately and synchronously with kill -9
+    # @return [RunningProcess]
     def kill!
       kill true
+    end
+
+    def job
+      @job ||= Jobs.by_pid[pid]
+    end
+
+    def restart!
+      raise Exceptions::Fatal, 'Cannot restart this process because it is not managed by a job' unless job
+      job.replace pid
     end
 
     private

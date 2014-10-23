@@ -4,7 +4,8 @@ module Epi::Triggers
   describe Touch do
 
     let(:path) { SPEC_ROOT + 'fixtures/touch.me' }
-    subject { Touch.new nil, path }
+
+    subject { Touch.new nil, nil, path }
 
     after { path.delete rescue nil }
 

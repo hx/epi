@@ -56,11 +56,11 @@ module Epi
       'Must be a non-negative number' unless value.is_a?(Numeric) && value >= 0
     end
 
-    attr_reader :id
+    attr_reader :id, :triggers
 
     def initialize(id)
       @id = id
-      @handlers = {}
+      @triggers = []
       @props = {}
     end
 
@@ -78,15 +78,13 @@ module Epi
     end
 
     def reconfigure
-      @handlers = {}
+      @triggers = []
       yield self
+      # TODO: trigger an update of existing/running jobs
     end
 
-    def on(event, *args, &handler)
-      (@handlers[event] ||= []) << {
-          args: args,
-          handler: handler
-      }
+    def on(trigger_name, *args, &handler)
+      @triggers << [trigger_name, args, handler]
     end
 
     def pid_key(proc_id)

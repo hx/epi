@@ -15,6 +15,7 @@ module Epi
 
     def initialize(job_description, state)
       @job_description = job_description
+      @triggers = job_description.triggers.map { |t| Trigger.make self, *t }
       @expected_count = state['expected_count'] || job_description.initial_processes
       @pids = state['pids']
       @dying_pids = state['dying_pids']
@@ -76,6 +77,10 @@ module Epi
       stop_one while running_count > expected_count
     end
 
+    def run_triggers!
+      @triggers.each &:try
+    end
+
     def shutdown!(&callback)
       count = running_count
       if count > 0
@@ -106,6 +111,12 @@ module Epi
       self
     end
 
+    def running_processes
+      pids.map do |proc_id, pid|
+        [proc_id, ProcessStatus[pid] || RunningProcess.new(pid)]
+      end.to_h
+    end
+
     def running_count
       pids.count
     end
@@ -114,16 +125,32 @@ module Epi
       dying_pids.count
     end
 
+    # Replace a running process with a new one
+    # @param pid [Fixnum] PID of the process to replace
+    def replace(pid, &callback)
+      stop_one pid do
+        start_one while running_count < expected_count
+        callback.call if callback
+      end
+    end
+
     private
 
     def start_one
       proc_id, pid = job_description.launch
       pids[proc_id] = pid
       Data.write pid_key(proc_id), pid
+      Jobs.by_pid[pid] = self
     end
 
-    def stop_one(&callback)
-      proc_id, pid = pids.shift
+    def stop_one(pid = nil, &callback)
+      if pid
+        proc_id = pids.key pid
+        raise Exceptions::Fatal, "Process #{pid} isn't managed by job #{id}" unless proc_id
+        pids.delete proc_id
+      else
+        proc_id, pid = pids.shift
+      end
       dying_pids[proc_id] = pid
       work = proc do
         ProcessStatus[pid].kill job_description.kill_timeout
@@ -131,6 +158,7 @@ module Epi
       done = proc do
         dying_pids.delete proc_id
         Data.write pid_key(proc_id), nil
+        Jobs.by_pid.delete pid
         callback.call if callback
       end
       EventMachine.defer work, done
