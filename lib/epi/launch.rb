@@ -53,7 +53,7 @@ module Epi
 
     # Run the command and read the resulting PID from its STDOUT
     IO.popen(env, cmd) { |p| p.read }.to_i.tap do |pid|
-      logger.debug "Process #{pid} started: #{`ps -p #{pid} -o command=`.chomp}"
+      logger.info "Process #{pid} started: #{`ps -p #{pid} -o command=`.chomp}"
     end
   end
 end

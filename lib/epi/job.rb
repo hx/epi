@@ -95,6 +95,17 @@ module Epi
       sync!
     end
 
+    def restart!
+      count = expected_count
+      if count > 0
+        self.expected_count = 0
+        sync!
+        self.expected_count = count
+        sync!
+      end
+      self
+    end
+
     def running_count
       pids.count
     end

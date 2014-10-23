@@ -17,6 +17,7 @@ require 'epi/jobs'
 require 'epi/configuration_file'
 require 'epi/job_description'
 require 'epi/launch'
+require 'epi/trigger'
 
 module Epi
   ROOT = Pathname File.expand_path('../..', __FILE__)

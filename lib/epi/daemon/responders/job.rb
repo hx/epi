@@ -21,11 +21,11 @@ module Epi
           @job ||= Jobs[id]
         end
 
-        def set(count, validate = true)
+        def set(count)
           allowed = job.allowed_processes
-          raise Exceptions::Fatal, "Requested count #{count} is outside allowed range #{allowed}" unless !validate || allowed === count
+          raise Exceptions::Fatal, "Requested count #{count} is outside allowed range #{allowed}" unless allowed === count
           original = job.expected_count
-          raise Exceptions::Fatal, "Already running #{count} process#{count != 1 ? 'es' : ''}" unless !validate || original != count
+          raise Exceptions::Fatal, "Already running #{count} process#{count != 1 ? 'es' : ''}" unless original != count
           job.expected_count = count
           job.sync!
           "#{count < original ? 'De' : 'In'}creasing '#{job.name}' processes by #{(original - count).abs} (from #{original} to #{count})"
@@ -59,8 +59,7 @@ module Epi
         def restart
           count = job.expected_count
           raise Exceptions::Fatal, 'This job has no processes to restart' if count == 0
-          set 0, false
-          set count
+          job.restart!
           "Replacing #{count} '#{job.name}' process#{count != 1 ? 'es' : ''}"
         end
 
