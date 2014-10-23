@@ -6,9 +6,9 @@ module Epi
     class << self
 
       def run(args)
-        command = args.shift || 'status' # The default command
+        command = args.shift || 'help' # The default command
         begin
-          Command.run command, args
+          Command.run command.delete('-'), args
         rescue Exceptions::Fatal => error
           STDERR << error.message
           STDERR << "\n"
