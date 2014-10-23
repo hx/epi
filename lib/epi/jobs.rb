@@ -18,6 +18,14 @@ module Epi
         @by_pid = {}
       end
 
+      def interval
+        if @interval.nil?
+          @interval = (ENV['EPI_INTERVAL'] || 5).to_f
+          Epi.logger.info "Polling process status every #{@interval} second#{@interval == 1 ? '' : 's'}"
+        end
+        @interval
+      end
+
       def beat!
 
         # Cancel any scheduled beats
@@ -50,7 +58,7 @@ module Epi
         Data.save
 
         # Schedule the next beat
-        @next_beat = EventMachine.add_timer(5) { beat! } # TODO: make interval configurable
+        @next_beat = EventMachine.add_timer(interval) { beat! }
       end
 
       def shutdown!(&callback)

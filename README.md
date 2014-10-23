@@ -8,7 +8,7 @@ Keeps your workers alive.
 $ gem install epi
 ```
 
-## Configuration
+## Job Configuration
 
 Example `config.epi`:
 
@@ -96,6 +96,18 @@ Starting 5 processes ...
 ```
 
 Config files will be reloaded whenever they change.
+
+## Polling
+
+Epi checks the state of running processes every 5 seconds by running the `ps` command.
+
+Change the number of seconds between polls by setting the `EPI_INTERVAL` environment variable.
+
+## Logging
+
+Logs are written to `~/.epi/epi.log`, or `/var/log/epi.log` if run as root.
+
+Set the `EPI_LOG` environment variable to tell Epi to write logs elsewhere. Set `EPI_LOG_LEVEL` to limit logging to *debug*, *info*, *error*, *warn*, *fatal*, or *unknown*.
 
 ## Running as other users
 
