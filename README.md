@@ -28,8 +28,8 @@ job resque: 'Resque Workers' do |j|
   j.stderr = '/var/log/worker_errors.log'
   j.kill_timeout = 3.seconds
 
-  j.on(:touch, __FILE__) { |p| p.restart! }
-  j.on(:memory, :gt, 350.megabytes) { |p| p.restart! }
+  j.on(:touch, __FILE__) { |job| job.restart! }
+  j.on(:memory, :gt, 350.megabytes) { |process| process.restart! }
 end
 ```
 
