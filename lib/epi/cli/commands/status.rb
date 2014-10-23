@@ -4,7 +4,11 @@ module Epi
       class Status < Command
 
         def run
-          Epi::Daemon.send :status
+          if Epi::Daemon.running?
+            Epi::Daemon.send :status
+          else
+            Epi::Daemon.send(:start) { Epi::Daemon.send :status }
+          end
         end
 
       end

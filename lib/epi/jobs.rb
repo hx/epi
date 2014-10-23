@@ -62,7 +62,7 @@ module Epi
       end
 
       def running_process_count
-        each_value.map(&:running_count).reduce :+
+        each_value.map(&:running_count).reduce(:+) || 0
       end
 
       def job_descriptions

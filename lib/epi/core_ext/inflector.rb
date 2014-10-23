@@ -1,6 +1,6 @@
 class String
   def camelize
-    gsub(/(^|_)[a-z\d]/) { |m| m.upcase }
+    gsub(/(^|_)[a-z\d]/) { |m| m[-1].upcase }
   end
 end
 

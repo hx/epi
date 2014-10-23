@@ -1,7 +1,7 @@
 module Epi
   module Daemon
     module Responders
-      # noinspection RubyStringKeysInHashInspection
+
       class StopAll < Responder
 
         def run_async

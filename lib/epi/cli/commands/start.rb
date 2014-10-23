@@ -1,13 +1,12 @@
 module Epi
   module Cli
     module Commands
-      class Stop < Command
+      class Start < Command
         include Concerns::Daemon
 
         def run
-          need_root!
-          need_daemon!
-          Epi::Daemon.send(:stop_all) { shutdown }
+          need_no_daemon!
+          Epi::Daemon.send :start
         end
 
       end

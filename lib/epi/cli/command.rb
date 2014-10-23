@@ -27,6 +27,7 @@ module Epi
 
       end
 
+      Dir[File.expand_path '../commands/concerns/*.rb', __FILE__].each { |f| require f }
       Dir[File.expand_path '../commands/*.rb', __FILE__].each { |f| require f }
     end
   end
