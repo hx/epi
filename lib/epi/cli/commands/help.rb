@@ -19,7 +19,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 See https://github.com/hx/epi for complete documentation
 
 Usage:
-  #{$0} command [etc...]
+  epi [command] [etc ...]
 
 Commands:
 #{commands}

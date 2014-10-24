@@ -10,7 +10,7 @@ module Epi
             klass = Commands.const_get const_name
             return klass.new(args).run if Class === klass && klass < self
           end
-          raise Exceptions::Fatal, 'Unknown command'
+          raise Exceptions::Fatal, "Unknown command. Run `epi help` for help."
         end
 
         attr_reader :args

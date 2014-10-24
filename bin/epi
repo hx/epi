@@ -3,7 +3,7 @@ lib = File.expand_path('../../lib', __FILE__)
 $: << lib unless $:.include? lib
 require 'epi'
 require 'eventmachine'
-if $0 == __FILE__
+if File.basename($0) == File.basename(__FILE__)
   EventMachine.run do
     %w[INT TERM].each do |s|
       Signal.trap(s) do
