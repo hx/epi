@@ -54,7 +54,7 @@ module Epi
       @running_processes = {}
 
       # Run `ps`
-      result = %x(ps x -o #{RunningProcess::PS_FORMAT})
+      result = %x(ps ax -o #{RunningProcess::PS_FORMAT})
 
       # Split into lines, and get rid of the first (heading) line
       @lines = result.lines[1..-1].map { |line| [line.lstrip.split(/\s/, 2).first.to_i, line] }.to_h

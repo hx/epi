@@ -29,11 +29,8 @@ module Epi
     else
 
       # Command and arguments that need to be escaped
-      command.each { |part| cmd << ' ' << Shellwords.escape(part) }
+      command.each { |part| cmd << ' ' << escape(part) }
     end
-
-    # Include `su` command if a user is given
-    cmd = "su #{user} -c #{cmd}" if user
 
     # STDOUT and STDERR redirection
     {:>> => stdout, :'2>>' => stderr}.each do |arrow, dest|
@@ -43,8 +40,11 @@ module Epi
     # Run in background, and return PID of backgrounded process
     cmd << ' & echo $!'
 
+    # Include `su` command if a user is given
+    cmd = "su #{user} -c #{escape cmd}" if user
+
     # Include the working directory
-    cmd = "cd #{Shellwords.escape cwd} && (#{cmd})" if cwd
+    cmd = "cd #{escape cwd} && (#{cmd})" if cwd
 
     # Convert environment variables to strings, and merge them with the current environment
     env = ENV.to_h.merge(env).map { |k, v| [k.to_s, v.to_s] }.to_h
@@ -55,5 +55,11 @@ module Epi
     IO.popen(env, cmd) { |p| p.read }.to_i.tap do |pid|
       logger.info "Process #{pid} started: #{`ps -p #{pid} -o command=`.chomp}"
     end
+  end
+
+  private
+
+  def self.escape(*args)
+    Shellwords.escape *args
   end
 end
