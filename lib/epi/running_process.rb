@@ -11,7 +11,7 @@ module Epi
     class << self
 
       def user_name(uid)
-        @users[uid.to_i] ||= `id -un #{uid}`.chomp
+        @users[uid.to_i] ||= %x[#{username_lookup_cmd % uid}].chomp
       end
 
       def group_name(gid)
@@ -22,6 +22,11 @@ module Epi
 
       def groups
         @groups ||= read_groups
+      end
+
+      def username_lookup_cmd
+        # Use `id -un` on Mac OS, and `getent passwd` on Linux
+        @username_lookup_cmd ||= `uname`.chomp == 'Darwin' ? 'id -un %s' : 'getent passwd %s | cut -d: -f1'
       end
 
       def read_groups
