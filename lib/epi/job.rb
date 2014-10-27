@@ -112,9 +112,7 @@ module Epi
     end
 
     def running_processes
-      pids.map do |proc_id, pid|
-        [proc_id, ProcessStatus[pid] || RunningProcess.new(pid)]
-      end.to_h
+      pids.map { |proc_id, pid| [proc_id, ProcessStatus[pid] || RunningProcess.new(pid)] }.select { |_, v| v.was_alive? }.to_h
     end
 
     def running_count
