@@ -45,14 +45,6 @@ module Epi
       @dying_pids ||= {}
     end
 
-    # Get the data key for the PID file of the given process ID or PID
-    # @param [String|Fixnum] proc_id Example: `'1a2b3c4d'` or `1234`
-    # @return [String|NilClass] Example: `pids/job_id/1ab3c4d.pid`, or `nil` if not found
-    def pid_key(proc_id)
-      proc_id = pids.key(proc_id) if Fixnum === proc_id
-      proc_id && job_description.pid_key(proc_id)
-    end
-
     # Stops processes that shouldn't run, starts process that should run, and
     # fires event handlers
     def sync!
@@ -137,7 +129,6 @@ module Epi
     def start_one
       proc_id, pid = job_description.launch
       pids[proc_id] = pid
-      Data.write pid_key(proc_id), pid
       Jobs.by_pid[pid] = self
     end
 
@@ -155,7 +146,6 @@ module Epi
       end
       done = proc do
         dying_pids.delete proc_id
-        Data.write pid_key(proc_id), nil
         Jobs.by_pid.delete pid
         callback.call if callback
       end

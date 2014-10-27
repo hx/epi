@@ -69,7 +69,7 @@ module Epi
       opts = {
           cwd: directory,
           user: user,
-          env: {PIDFILE: pid_path(proc_id)}.merge(environment || {}),
+          env: environment || {},
           stdout: stdout,
           stderr: stderr
       }
@@ -85,14 +85,6 @@ module Epi
 
     def on(trigger_name, *args, &handler)
       @triggers << [trigger_name, args, handler]
-    end
-
-    def pid_key(proc_id)
-      "pids/#{id}/#{proc_id}.pid"
-    end
-
-    def pid_path(proc_id)
-      Data.home + pid_key(proc_id)
     end
 
     private
