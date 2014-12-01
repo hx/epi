@@ -1,5 +1,7 @@
 # Epinephrine
 
+[![Build Status](https://travis-ci.org/hx/epi.svg?branch=develop)](https://travis-ci.org/hx/epi)
+
 Keeps your workers alive.
 
 ## Installation
