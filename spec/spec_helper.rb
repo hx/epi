@@ -1,3 +1,9 @@
+require 'coveralls'
+require 'simplecov'
+
+SimpleCov.start
+Coveralls.wear! if ENV['WEAR_COVERALLS']
+
 require 'pathname'
 require 'fileutils'
 
