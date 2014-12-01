@@ -3,7 +3,7 @@ require 'fileutils'
 module Epi::Triggers
   describe Touch do
 
-    let(:path) { SPEC_ROOT + 'fixtures/touch.me' }
+    let(:path) { SPEC_ROOT + "fixtures/touch.#{$$}" }
 
     subject { Touch.new nil, nil, path }
 

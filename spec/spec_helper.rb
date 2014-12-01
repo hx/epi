@@ -3,7 +3,7 @@ require 'fileutils'
 
 SPEC_ROOT = Pathname File.expand_path('..', __FILE__)
 
-ENV['EPI_HOME'] = SPEC_ROOT.join('.epi').to_s
+ENV['EPI_HOME'] = SPEC_ROOT.join(".epi-#{$$}").to_s
 
 require_relative '../lib/epi'
 

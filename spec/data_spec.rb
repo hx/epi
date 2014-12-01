@@ -2,7 +2,7 @@ describe Epi::Data do
 
   describe 'instances' do
 
-    subject { Epi::Data.new(SPEC_ROOT + '.epi') }
+    subject { Epi::Data.new(SPEC_ROOT + ".epi-#{$$}") }
 
     it 'should act like a hash' do
       subject[:foo] = 123
@@ -25,8 +25,8 @@ describe Epi::Data do
 
     after { Epi::Data.reset! }
 
-    it 'should use "spec/.epi" as its home dir' do
-      expect(subject.home.to_s).to end_with '/spec/.epi'
+    it 'should use "spec/.epi-[pid]" as its home dir' do
+      expect(subject.home.to_s).to end_with "/spec/.epi-#{$$}"
     end
 
     it 'should have made its home directory' do
