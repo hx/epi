@@ -1,7 +1,7 @@
 # Epinephrine
 
 [![Build Status](https://travis-ci.org/hx/epi.svg?branch=develop)](https://travis-ci.org/hx/epi)
-[![Coverage Status](https://img.shields.io/coveralls/hx/epi.svg)](https://coveralls.io/r/hx/epi?branch=develop)
+[![Coverage Status](https://img.shields.io/coveralls/hx/epi/develop.svg)](https://coveralls.io/r/hx/epi?branch=develop)
 
 Keeps your workers alive.
 
